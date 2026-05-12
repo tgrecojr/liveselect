@@ -1,17 +1,12 @@
-//
-//  LiveSelectApp.swift
-//  LiveSelect
-//
-//  Created by T.J. Greco on 5/12/26.
-//
-
 import SwiftUI
 
 @main
 struct LiveSelectApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        Settings {
+            EmptyView()
         }
     }
 }
