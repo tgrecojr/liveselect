@@ -15,11 +15,11 @@ Text recognition runs locally through Apple's Vision framework — on Apple Sili
 
 ## Requirements
 
-- macOS 14 Sonoma or later
-- Xcode 16 or later (to build)
+- macOS 15 Sequoia or later
+- Xcode 26 or later (to build) — the project uses the Swift 6 language mode and Swift 6.2 concurrency features (`@concurrent`, default `MainActor` isolation)
 - Apple Silicon recommended (Vision runs on the Neural Engine); Intel Macs work too, just slower
 
-> **Note:** The Xcode project ships with `MACOSX_DEPLOYMENT_TARGET = 26.5` (the SDK version at the time of writing). If you want to run on older macOS versions, lower it to `14.0` in the project's Build Settings — none of the code uses macOS 15+ APIs.
+> **Note:** The Xcode project ships with `MACOSX_DEPLOYMENT_TARGET = 26.5`. If you want to run on older macOS versions, lower it in the project's Build Settings — the floor is `15.0`, since OCR uses Vision's Swift-native `RecognizeTextRequest` API (macOS 15+).
 
 ## Install
 
@@ -67,7 +67,7 @@ LiveSelect is a thin, AppKit-based menu bar app. The capture pipeline:
 
 1. **`SelectionOverlayWindow`** — a borderless, transparent `NSWindow` is shown on each `NSScreen`. A custom `NSView` tracks mouse drags and draws a live cutout rectangle using the even-odd winding rule.
 2. **`ScreenCaptureService`** — once the user releases the mouse, the selected rectangle is converted from AppKit's bottom-left screen coordinates to ScreenCaptureKit's top-left display coordinates. `SCScreenshotManager.captureImage` returns a `CGImage` at native (Retina) resolution. LiveSelect's own windows are excluded from the capture via `SCContentFilter(display:excludingApplications:exceptingWindows:)`.
-3. **`TextRecognitionService`** — the `CGImage` is fed to `VNRecognizeTextRequest` (`.accurate` revision, `usesLanguageCorrection = true`, automatic language detection). The work runs on a detached `Task` so the main actor stays responsive.
+3. **`TextRecognitionService`** — the `CGImage` is fed to Vision's `RecognizeTextRequest` (`.accurate` level, `usesLanguageCorrection = true`, automatic language detection). The method is `@concurrent`, so the work runs off the main actor and the UI stays responsive.
 4. **`ClipboardAndFeedback`** — the recognized text is written to `NSPasteboard.general`, the Glass system sound plays, and a `UNNotification` is posted with the character count.
 
 If no text is recognized, the user gets a `Pop` sound and a "No text recognized" banner. If anything throws, the same sound plus the error's localized description.
