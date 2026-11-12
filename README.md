@@ -99,10 +99,10 @@ The Xcode project uses `PBXFileSystemSynchronizedRootGroup`, so adding a new Swi
 
 ## Contributing
 
-Issues and PRs welcome. For non-trivial changes, please open an issue first so we can sketch the approach.
+Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
 The codebase is intentionally small (well under 1k lines of Swift). Each pipeline stage is one file; adding a feature usually means touching one or two of them.
 
 ## License
 
-TBD — currently unlicensed. Add a license file before publishing if you intend others to reuse the code.
+Released under the [MIT License](LICENSE).
